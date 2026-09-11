@@ -88,9 +88,11 @@ function CreateProductForm() {
 
 // Contoh penggunaan React Query
 async function getProducts() {
-  const response = await fetch("https://fakestoreapi.com/products");
-  return response.json();
-}
+    const response = await fetch("https://fakestoreapi.com/products");
+    if (!response.ok) {
+      throw new Error(`Failed to fetch products: ${response.status}`);
+    }
+    return response.json();
 
 function Products() {
   const { data, isLoading, error } = useQuery({
