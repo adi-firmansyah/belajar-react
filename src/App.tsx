@@ -68,10 +68,14 @@ function CreateProductForm() {
           id="title"
           type="text"
           {...register("title")}
+          aria-invalid={errors.title ? "true" : undefined}
+          aria-describedby={errors.title ? "title-error" : undefined}
           className="border px-2 py-1"
         />
         {errors.title?.message && (
-          <p className="text-sm text-red-500">{errors.title?.message}</p>
+          <p id="title-error" className="text-sm text-red-500">
+            {errors.title.message}
+          </p>
         )}
       </div>
 
