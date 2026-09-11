@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { cn } from "./lib/utils";
 import { useCountStore } from "./stores/useCountStore";
@@ -38,6 +39,42 @@ function Count() {
   );
 }
 
+async function getProducts() {
+  const response = await fetch("https://fakestoreapi.com/products");
+  return response.json();
+}
+
+function Products() {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: getProducts,
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  return (
+    <div className={cn("grid grid-cols-4 gap-4")}>
+      {data.map((product: any) => (
+        <div
+          key={product.id}
+          className={cn(
+            "flex flex-col items-center justify-center gap-2 rounded border p-4",
+          )}
+        >
+          <img
+            src={product.image}
+            alt={product.title}
+            className={cn("h-32 w-32 object-contain")}
+          />
+          <h2 className={cn("text-lg font-bold")}>{product.title}</h2>
+          <p className={cn("text-gray-500")}>${product.price}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -51,6 +88,7 @@ export default function App() {
           element={<h1 className={cn("text-3xl font-bold")}>About</h1>}
         />
         <Route path="/count" element={<Count />} />
+        <Route path="/products" element={<Products />} />
       </Routes>
     </BrowserRouter>
   );
